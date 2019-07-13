@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_house"
+            android:title="@string/menu_home" />
+        <item
+            android:id="@+id/nav_mpr"
+            android:icon="@drawable/ic_progress"
+            android:title="MPR" />
+        <item
+            android:id="@+id/nav_immunize"
+            android:icon="@drawable/ic_immunity"
+            android:title="IMMUNIZATION" />
+        <item
+            android:id="@+id/nav_thr"
+            android:icon="@drawable/ic_watermelon"
+            android:title="THR" />
+        <item
+            android:id="@+id/nav_bnf"
+            android:icon="@drawable/ic_care"
+            android:title="BNF LIST" />
+        <item
+            android:id="@+id/nav_about"
+            android:icon="@drawable/ic_professor_lecture_about_graduation"
+            android:title="About" />
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/ic_logout"
+            android:title="Logout" />
+    </group>
+
+    <!--<item android:title="Communicate">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_menu_share"
+                android:title="@string/menu_share" />
+            <item
+                android:id="@+id/nav_send"
+                android:icon="@drawable/ic_menu_send"
+                android:title="@string/menu_send" />
+        </menu>
+    </item>-->
+
+</menu>

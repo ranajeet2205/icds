@@ -90,9 +90,8 @@ public class SignUpActivity extends AppCompatActivity {
                     Toasty.error(SignUpActivity.this, "Please Provide Valid Data", Toast.LENGTH_SHORT, true).show();
                     activitySignUpBinding.progressbar.setVisibility(View.GONE);
                 } else {
-
                     signUpWithEmail(email, password);
-
+                    activitySignUpBinding.progressbar.setVisibility(View.GONE);
                 }
 
             }

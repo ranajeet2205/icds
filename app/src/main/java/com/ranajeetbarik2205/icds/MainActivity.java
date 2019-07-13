@@ -16,6 +16,8 @@ import android.view.MenuItem;
 import com.google.android.material.navigation.NavigationView;
 import com.ranajeetbarik2205.icds.activity.LoginActivity;
 import com.ranajeetbarik2205.icds.fragment.BNFFragment;
+import com.ranajeetbarik2205.icds.util.AppConstants;
+import com.ranajeetbarik2205.icds.util.SharedPrefManager;
 
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -31,12 +33,14 @@ public class MainActivity extends AppCompatActivity
 
     private NavController navController;
     int currentDestination;
+    SharedPrefManager sharedPrefManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
+        sharedPrefManager = new SharedPrefManager(this);
         setSupportActionBar(toolbar);
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -112,6 +116,7 @@ public class MainActivity extends AppCompatActivity
             navController.navigate(R.id.aboutFragment);
 
         } else if (id == R.id.nav_logout) {
+            sharedPrefManager.setBool(AppConstants.IS_FIRST_TIME_LOGIN,false);
             startActivity(new Intent(MainActivity.this, LoginActivity.class));
             finish();
         }

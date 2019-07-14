@@ -78,7 +78,7 @@ public class MPRFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setRetainInstance(true);
     }
 
     @Override
@@ -173,7 +173,7 @@ public class MPRFragment extends Fragment {
 
                 MPR mpr = null;
                 Weight weight = null;
-                try{
+                try {
                     mpr = new MPR(month, centre, awwName, awhName, pmNumber, nmNumber, babiesNumber,
                             preschoolChildren, immunized
                             , healthCheckup, referal, centrePhotoFile.getAbsolutePath(),
@@ -183,11 +183,13 @@ public class MPRFragment extends Fragment {
                             babiesModerateWeight, babiesSnmWeight
                             , preschoolNormalWeight, preschoolModerateWeight, preschoolSnmWeight, 0);
 
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
-                if (mprViewModel.isValid(mpr, weight)) {
+                if (fragmentMprBinding.monthSpinner.getSelectedItemPosition() == 0) {
+                    Toasty.info(getActivity(), "Please Select Month", Toast.LENGTH_SHORT, true).show();
+                } else if (mprViewModel.isValid(mpr, weight)) {
                     mprViewModel.insertMprData(mpr);
                     mprViewModel.insertWeightData(weight);
                     Bitmap signatureBitmap = fragmentMprBinding.signaturePad.getSignatureBitmap();
@@ -400,6 +402,8 @@ public class MPRFragment extends Fragment {
         } else if (resultCode == Activity.RESULT_CANCELED) {
             // User Cancelled the action
             Toasty.error(getActivity(), "Picture Is Not Clicked", Toast.LENGTH_LONG).show();
+        }else{
+            Toasty.error(getActivity(), "Error", Toast.LENGTH_LONG).show();
         }
     }
 }

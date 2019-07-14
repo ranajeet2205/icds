@@ -101,7 +101,7 @@ public class SignaturePad extends View {
 
     }
 
-    @Override
+    /*@Override
     protected Parcelable onSaveInstanceState() {
         Bundle bundle = new Bundle();
         bundle.putParcelable("superState", super.onSaveInstanceState());
@@ -110,7 +110,7 @@ public class SignaturePad extends View {
         }
         bundle.putParcelable("signatureBitmap", this.mBitmapSavedState);
         return bundle;
-    }
+    }*/
 
 
     @Override

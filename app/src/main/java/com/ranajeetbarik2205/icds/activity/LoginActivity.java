@@ -3,6 +3,7 @@ package com.ranajeetbarik2205.icds.activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Context;
 import android.content.Intent;
@@ -22,6 +23,7 @@ import com.ranajeetbarik2205.icds.R;
 import com.ranajeetbarik2205.icds.databinding.ActivityLoginBinding;
 import com.ranajeetbarik2205.icds.util.AppConstants;
 import com.ranajeetbarik2205.icds.util.SharedPrefManager;
+import com.ranajeetbarik2205.icds.viewmodels.SignUpViewModel;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -35,6 +37,7 @@ public class LoginActivity extends AppCompatActivity {
     private String whoIsUser,userMailId,userPassword;
     FirebaseAuth mAuth;
     SharedPrefManager sharedPrefManager;
+    SignUpViewModel signUpViewModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +47,8 @@ public class LoginActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         //Initialise new Shared Preference Object
         sharedPrefManager = new SharedPrefManager(this);
+
+        signUpViewModel = ViewModelProviders.of(this).get(SignUpViewModel.class);
 
         activityLoginBinding.loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,13 +86,11 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-
         designationSpinnerAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.Designation));
         designationSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         activityLoginBinding.designationSpinner.setAdapter(designationSpinnerAdapter);
-
 
     }
 
@@ -114,6 +117,17 @@ public class LoginActivity extends AppCompatActivity {
 
     public boolean isPasswordValid(String password) {
 
+        /**
+         * Regular Expression for pasword in java
+         * ^                 # start-of-string
+         * (?=.*[0-9])       # a digit must occur at least once
+         * (?=.*[a-z])       # a lower case letter must occur at least once
+         * (?=.*[A-Z])       # an upper case letter must occur at least once
+         * (?=.*[@#$%^&+=])  # a special character must occur at least once
+         * (?=\S+$)          # no whitespace allowed in the entire string
+         * .{8,}             # anything, at least eight places though
+         * $                 # end-of-string
+         */
 
         String regExpn =
                 "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$";
@@ -136,11 +150,15 @@ public class LoginActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()){
                     //preferenceManager.setIsFirstTimeLogin(false);
+                    String designation = signUpViewModel.designation(userMailId);
+                    sharedPrefManager.setStr(AppConstants.WHO_IS_USER,designation);
+                    Toast.makeText(LoginActivity.this, designation, Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
                     finish();
                 }
                 else {
                     Toast.makeText(LoginActivity.this, "Authentication Failed", Toast.LENGTH_SHORT).show();
+                    activityLoginBinding.progress.setVisibility(View.GONE);
                 }
             }
         });

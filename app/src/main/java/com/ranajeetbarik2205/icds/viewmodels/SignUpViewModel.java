@@ -22,6 +22,11 @@ public class SignUpViewModel extends AndroidViewModel {
         userLiveDataList = userRepository.getUserLiveDataList();
     }
 
+    public String designation(String email){
+      String designation =   userRepository.getDesignation(email);
+      return designation;
+    }
+
     public void insertUser(User user){
         userRepository.insertUser(user);
     }

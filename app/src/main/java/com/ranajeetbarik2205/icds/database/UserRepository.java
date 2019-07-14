@@ -9,6 +9,7 @@ import com.ranajeetbarik2205.icds.dao.UserDao;
 import com.ranajeetbarik2205.icds.models.User;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class UserRepository {
 
@@ -27,6 +28,19 @@ public class UserRepository {
     public void insertUser(User user){
         new InsertUserAsyncTask(userDao).execute(user);
     }
+
+    public String getDesignation(String email){
+        String designation = null;
+        try {
+            designation = new GetDesignation(userDao).execute(email).get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return designation;
+    }
+
 
     public class InsertUserAsyncTask  extends AsyncTask<User,Void,Void>{
         private UserDao userdao;
@@ -49,6 +63,32 @@ public class UserRepository {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+        }
+    }
+
+    public class GetDesignation extends AsyncTask<String,Void,String>{
+
+        private UserDao userdao;
+        String designation;
+
+        public GetDesignation(UserDao userdao){
+            this.userdao = userdao;
+        }
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            designation = userdao.getDesignation(strings[0]);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
         }
     }
 }

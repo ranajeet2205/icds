@@ -20,6 +20,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -202,10 +203,19 @@ public class SignUpActivity extends AppCompatActivity {
                     startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
                     Toasty.success(SignUpActivity.this, "Sign Up Successful", Toast.LENGTH_SHORT, true).show();
                     finish();
-                } else {
+                }
+                else {
                     Toasty.info(SignUpActivity.this, "Please Make Sure You Entered Valid Details", Toast.LENGTH_SHORT, true).show();
+                    task.addOnFailureListener(SignUpActivity.this, new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            e.printStackTrace();
+                            Toast.makeText(SignUpActivity.this, e.toString(), Toast.LENGTH_LONG).show();
+                        }
+                    });
                 }
             }
+
         });
     }
 }

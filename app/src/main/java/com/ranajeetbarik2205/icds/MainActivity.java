@@ -102,8 +102,8 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_home && R.id.homeFragment != currentDestination) {
             navController.navigate(R.id.homeFragment);
 
-        } else if (id == R.id.nav_mpr && R.id.MPRFragment != currentDestination) {
-            navController.navigate(R.id.MPRFragment);
+        } else if (id == R.id.nav_mpr && R.id.mprListFragment != currentDestination) {
+            navController.navigate(R.id.mprListFragment);
         } else if (id == R.id.nav_immunize && R.id.immunizationFragment2 != currentDestination) {
 
             navController.navigate(R.id.immunizationFragment2);

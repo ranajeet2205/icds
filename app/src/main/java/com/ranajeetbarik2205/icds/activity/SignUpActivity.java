@@ -92,7 +92,7 @@ public class SignUpActivity extends AppCompatActivity {
                     activitySignUpBinding.progressbar.setVisibility(View.GONE);
                 } else {
                     signUpWithEmail(email, password);
-                    activitySignUpBinding.progressbar.setVisibility(View.GONE);
+                    //activitySignUpBinding.progressbar.setVisibility(View.GONE);
                 }
 
             }

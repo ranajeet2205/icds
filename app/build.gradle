@@ -47,6 +47,7 @@ dependencies {
     implementation "androidx.navigation:navigation-ui:$nav_version"
 
     implementation "androidx.recyclerview:recyclerview:1.0.0"
+    implementation 'androidx.cardview:cardview:1.0.0'
 
     //Dependency For Room Database library
     def room_version = "2.1.0"

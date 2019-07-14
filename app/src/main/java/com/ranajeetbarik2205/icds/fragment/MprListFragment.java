@@ -71,6 +71,7 @@ public class MprListFragment extends Fragment {
             @Override
             public void onClick(View v) {
                navController.navigate(R.id.action_mprListFragment_to_MPRFragment);
+
             }
         });
     }

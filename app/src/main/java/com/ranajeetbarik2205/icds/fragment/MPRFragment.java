@@ -20,6 +20,8 @@ import androidx.core.content.FileProvider;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -70,6 +72,7 @@ public class MPRFragment extends Fragment {
     private File photoFile = null;
     private File centrePhotoFile, childrenPhotoFile;
     private int photoFlag = 0;
+    NavController navController;
 
     public MPRFragment() {
         // Required empty public constructor
@@ -79,6 +82,7 @@ public class MPRFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+        navController = Navigation.findNavController(getActivity(),R.id.nav_host_fragment);
     }
 
     @Override
@@ -189,7 +193,10 @@ public class MPRFragment extends Fragment {
 
                 if (fragmentMprBinding.monthSpinner.getSelectedItemPosition() == 0) {
                     Toasty.info(getActivity(), "Please Select Month", Toast.LENGTH_SHORT, true).show();
-                } else if (mprViewModel.isValid(mpr, weight)) {
+                }else if(mprViewModel.numberOfMprEntry(centre,month)==1){
+                    Toasty.info(getActivity(), "You Already Entered For this Centre", Toast.LENGTH_SHORT, true).show();
+                }
+                else if (mprViewModel.isValid(mpr, weight)) {
                     mprViewModel.insertMprData(mpr);
                     mprViewModel.insertWeightData(weight);
                     Bitmap signatureBitmap = fragmentMprBinding.signaturePad.getSignatureBitmap();
@@ -200,6 +207,7 @@ public class MPRFragment extends Fragment {
                         Toast.makeText(getActivity(), "Unable to store the signature", Toast.LENGTH_SHORT).show();
                     }
                     Toasty.success(getActivity(), "Data Saved Successfully", Toast.LENGTH_LONG, true).show();
+                    navController.navigate(R.id.action_MPRFragment_to_mprListFragment);
                 } else {
 
                     Toasty.info(getActivity(), "Please provide The Required Data", Toast.LENGTH_SHORT, true).show();

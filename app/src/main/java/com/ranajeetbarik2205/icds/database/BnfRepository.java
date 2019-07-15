@@ -13,6 +13,7 @@ import java.util.List;
 public class BnfRepository {
     private BNFDao bnfDao;
     private LiveData<List<BNF>> bnfLiveDataList;
+    private int numberOfBnfEntries;
 
     public BnfRepository(Application application){
         bnfDao = DatabaseClient.getDatabaseClient(application).getICDSDatabase().bnfDao();
@@ -25,6 +26,11 @@ public class BnfRepository {
 
     public void insertBnfData(BNF bnf){
         new InsertBnfDataTask(bnfDao).execute(bnf);
+    }
+
+    public int numberOfBnfEntries(String centre,String month){
+        new GetBnfEntries().execute(centre,month);
+        return numberOfBnfEntries;
     }
 
     public class InsertBnfDataTask extends AsyncTask<BNF,Void,Void>{
@@ -48,6 +54,15 @@ public class BnfRepository {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+        }
+    }
+
+    public class GetBnfEntries extends AsyncTask<String,Void,Integer>{
+
+        @Override
+        protected Integer doInBackground(String... strings) {
+            numberOfBnfEntries = bnfDao.numberOfEntriesBnf(strings[0],strings[1]);
+            return null;
         }
     }
 }

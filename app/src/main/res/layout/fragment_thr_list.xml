@@ -14,10 +14,10 @@
         tools:context=".fragment.MprListFragment">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/mpr_list_rcv"
+            android:id="@+id/thr_list_rcv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:listitem="@layout/mpr_list_item">
+            tools:listitem="@layout/thr_item_ist">
 
         </androidx.recyclerview.widget.RecyclerView>
 

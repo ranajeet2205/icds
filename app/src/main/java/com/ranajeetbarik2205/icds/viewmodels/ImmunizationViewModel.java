@@ -31,6 +31,11 @@ public class ImmunizationViewModel extends AndroidViewModel {
         immunizationRepository.insertImmunizationList(immunization);
     }
 
+    public int numberOfImmunEntry(String centre,String month){
+        int numberOfImmunEntry = immunizationRepository.numberOfImmunEntry(centre, month);
+        return numberOfImmunEntry;
+    }
+
     public boolean isValid(Immunization immunization){
         String totalDue = immunization.getNumber_total_due();
         String totalReceived = immunization.getTotal_number_received();

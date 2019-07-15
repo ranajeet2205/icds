@@ -13,10 +13,12 @@ import java.util.List;
 public class MprRepository {
     private MPRDao mprDao;
     private LiveData<List<MPR>> mprList;
+    private int numberMprEntry;
 
     public MprRepository(Application application){
         mprDao = DatabaseClient.getDatabaseClient(application).getICDSDatabase().mprDao();
         mprList = mprDao.mprList();
+
     }
 
     public LiveData<List<MPR>> getMprList(){
@@ -25,6 +27,11 @@ public class MprRepository {
 
     public void insertMprData(MPR mpr){
         new InsertMprDataTask(mprDao).execute(mpr);
+    }
+
+    public int numberMprEntry(String centre,String month){
+        new GetNumberOfEntries().execute(centre,month);
+        return numberMprEntry;
     }
 
     public class InsertMprDataTask extends AsyncTask<MPR,Void,Void>{
@@ -50,5 +57,13 @@ public class MprRepository {
         }
     }
 
+    public class GetNumberOfEntries extends AsyncTask<String,Void,Integer>{
+
+        @Override
+        protected Integer doInBackground(String... strings) {
+            numberMprEntry = mprDao.numberOfEntriesMpr(strings[0],strings[1]);
+            return null;
+        }
+    }
 
 }

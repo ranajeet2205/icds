@@ -17,23 +17,43 @@
         tools:layout="@layout/fragment_mpr" >
         <action
             android:id="@+id/action_MPRFragment_to_mprListFragment"
-            app:destination="@id/mprListFragment" />
+            app:destination="@id/mprListFragment"
+            app:popUpTo="@+id/mprListFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/immunizationFragment2"
         android:name="com.ranajeetbarik2205.icds.fragment.ImmunizationFragment"
         android:label="fragment_immunization"
-        tools:layout="@layout/fragment_immunization" />
+        tools:layout="@layout/fragment_immunization" >
+        <action
+            android:id="@+id/action_immunizationFragment2_to_immunizListFragment"
+            app:destination="@id/immunizListFragment"
+            app:popUpTo="@+id/immunizListFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
     <fragment
         android:id="@+id/THRFragment"
         android:name="com.ranajeetbarik2205.icds.fragment.THRFragment"
         android:label="fragment_thr"
-        tools:layout="@layout/fragment_thr" />
+        tools:layout="@layout/fragment_thr" >
+        <action
+            android:id="@+id/action_THRFragment_to_thrListFragment"
+            app:destination="@id/thrListFragment"
+            app:popUpTo="@+id/thrListFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
     <fragment
         android:id="@+id/BNFFragment"
         android:name="com.ranajeetbarik2205.icds.fragment.BNFFragment"
         android:label="fragment_bnf"
-        tools:layout="@layout/fragment_bnf" />
+        tools:layout="@layout/fragment_bnf" >
+        <action
+            android:id="@+id/action_BNFFragment_to_bnfListFragment"
+            app:destination="@id/bnfListFragment"
+            app:popUpTo="@+id/bnfListFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
     <fragment
         android:id="@+id/aboutFragment"
         android:name="com.ranajeetbarik2205.icds.fragment.AboutFragment"
@@ -47,5 +67,32 @@
         <action
             android:id="@+id/action_mprListFragment_to_MPRFragment"
             app:destination="@id/MPRFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/immunizListFragment"
+        android:name="com.ranajeetbarik2205.icds.fragment.ImmunizListFragment"
+        android:label="fragment_immuniz_list"
+        tools:layout="@layout/fragment_immuniz_list" >
+        <action
+            android:id="@+id/action_immunizListFragment_to_immunizationFragment2"
+            app:destination="@id/immunizationFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/thrListFragment"
+        android:name="com.ranajeetbarik2205.icds.fragment.ThrListFragment"
+        android:label="fragment_thr_list"
+        tools:layout="@layout/fragment_thr_list" >
+        <action
+            android:id="@+id/action_thrListFragment_to_THRFragment"
+            app:destination="@id/THRFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/bnfListFragment"
+        android:name="com.ranajeetbarik2205.icds.fragment.BnfListFragment"
+        android:label="fragment_bnf_list"
+        tools:layout="@layout/fragment_bnf_list" >
+        <action
+            android:id="@+id/action_bnfListFragment_to_BNFFragment"
+            app:destination="@id/BNFFragment" />
     </fragment>
 </navigation>

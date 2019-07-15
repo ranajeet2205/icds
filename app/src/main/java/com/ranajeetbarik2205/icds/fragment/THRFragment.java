@@ -15,6 +15,8 @@ import androidx.core.content.FileProvider;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -51,6 +53,7 @@ public class THRFragment extends Fragment {
     private ThrViewModel thrViewModel;
     private String month, center, totalBnf, totalPackets, totalCost;
     private String thrPhotoPath;
+    private NavController navController;
 
     public THRFragment() {
         // Required empty public constructor
@@ -59,7 +62,7 @@ public class THRFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        navController =  Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
     }
 
     @Override
@@ -146,11 +149,16 @@ public class THRFragment extends Fragment {
 
                 THR thr = new THR(month, center, totalBnf, totalPackets, thrPhotoPath, totalCost, 0);
                 boolean valid = thrViewModel.isValid(thr);
-                if (fragmentThrBinding.centerSpinner.getSelectedItemPosition()==0){
+                if (fragmentThrBinding.monthSpinner.getSelectedItemPosition()==0){
                     Toasty.info(getActivity(),"Please Select a month",Toast.LENGTH_SHORT,true).show();
-                }else if (fragmentThrBinding.centerSpinner.getSelectedItemPosition()!=0 && valid){
+                }else if (thrViewModel.getNumberOfThrEntries(center,month)==1){
+                    Toasty.info(getActivity(), "You Already Entered For this Centre", Toast.LENGTH_SHORT, true).show();
+                }
+                else if ( valid){
                     thrViewModel.insertThrData(thr);
                     Toasty.success(getActivity(), "Data Saved Successfully", Toast.LENGTH_LONG, true).show();
+                    navController.navigate(R.id.action_THRFragment_to_thrListFragment);
+
                 }
                 else{
                     Toasty.info(getActivity(),"Please Provide Valid Data",Toast.LENGTH_SHORT,true).show();

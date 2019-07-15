@@ -10,6 +10,8 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +37,7 @@ public class BNFFragment extends Fragment {
    private ArrayAdapter<String> monthSpinnerAdapter;
    private ArrayAdapter<String> centerSpinnerAdapter;
    private BnfViewModel bnfViewModel;
+    private NavController navController;
    private String month,center,totalPm,totalNm,totalBabies,totalPreschool,totalBnf;
 
     public BNFFragment() {
@@ -44,7 +47,7 @@ public class BNFFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
     }
 
     @Override
@@ -129,10 +132,13 @@ public class BNFFragment extends Fragment {
                 boolean valid = bnfViewModel.isValid(bnf);
                 if (fragmentBnfBinding.monthSpinner.getSelectedItemPosition()==0){
                     Toasty.info(getActivity(),"Please Select a month",Toast.LENGTH_SHORT,true).show();
+                }else if (bnfViewModel.numberOfEntries(center,month)==1){
+                    Toasty.info(getActivity(), "You Already Entered For this Centre", Toast.LENGTH_SHORT, true).show();
                 }
                 else if (fragmentBnfBinding.monthSpinner.getSelectedItemPosition()!=0 && valid){
                     bnfViewModel.insertBnfData(bnf);
                     Toasty.success(getActivity(), "Data Saved Successfully", Toast.LENGTH_LONG, true).show();
+                    navController.navigate(R.id.action_BNFFragment_to_bnfListFragment);
                 }
                 else{
                     Toasty.info(getActivity(),"Please Provide Valid Data",Toast.LENGTH_SHORT,true).show();

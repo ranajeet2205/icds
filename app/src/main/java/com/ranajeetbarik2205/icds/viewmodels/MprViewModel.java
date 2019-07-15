@@ -45,6 +45,11 @@ public class MprViewModel extends AndroidViewModel {
         weightRepository.insertWeight(weight);
     }
 
+    public int numberOfMprEntry(String centre,String month){
+       int numberEntries =  mprRepository.numberMprEntry(centre,month);
+       return numberEntries;
+    }
+
     public boolean isValid(MPR mpr,Weight weight){
         try{
             int totalBabiesInWeight,totalPreschoolInWeight,numberNormalBabies,numberModerateBabies,numberSumBabies,

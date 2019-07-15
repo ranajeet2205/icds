@@ -15,9 +15,12 @@ import androidx.core.content.FileProvider;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,6 +53,7 @@ public class ImmunizationFragment extends Fragment {
     private ArrayAdapter<String> centerSpinnerAdapter;
     private String centre, month, totalDue, totalReceived;
     private ImmunizationViewModel immunizationViewModel;
+    private NavController navController;
 
     public ImmunizationFragment() {
         // Required empty public constructor
@@ -59,7 +63,8 @@ public class ImmunizationFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        navController =  Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
+        immunizationViewModel = ViewModelProviders.of(getActivity()).get(ImmunizationViewModel.class);
     }
 
     @Override
@@ -73,7 +78,7 @@ public class ImmunizationFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
-        immunizationViewModel = ViewModelProviders.of(getActivity()).get(ImmunizationViewModel.class);
+
 
         monthSpinnerAdapter = new ArrayAdapter<String>(getActivity(),
                 android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.month)) {
@@ -147,9 +152,15 @@ public class ImmunizationFragment extends Fragment {
                 boolean valid = immunizationViewModel.isValid(immunization);
                 if (fragmentImmunizationBinding.monthSpinner.getSelectedItemPosition()==0){
                     Toasty.info(getActivity(),"Please Select a month",Toast.LENGTH_SHORT,true).show();
-                }else if (fragmentImmunizationBinding.monthSpinner.getSelectedItemPosition()!=0 && valid ){
+                }
+                else if (immunizationViewModel.numberOfImmunEntry(centre,month)==1){
+                    Toasty.info(getActivity(), "You Already Entered For this Centre", Toast.LENGTH_SHORT, true).show();
+
+                } else if (fragmentImmunizationBinding.monthSpinner.getSelectedItemPosition()!=0 && valid && (TextUtils.equals(totalDue,totalReceived) || (Integer.parseInt(totalDue)<Integer.parseInt(totalReceived)))){
                     immunizationViewModel.insertImmunizationData(immunization);
                     Toasty.success(getActivity(), "Data Saved Successfully", Toast.LENGTH_LONG, true).show();
+                    navController.navigate(R.id.action_immunizationFragment2_to_immunizListFragment);
+
                 }
                 else{
                     Toasty.info(getActivity(),"Please Provide Valid Data",Toast.LENGTH_SHORT,true).show();

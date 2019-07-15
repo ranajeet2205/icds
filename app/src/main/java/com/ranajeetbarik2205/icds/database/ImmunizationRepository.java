@@ -14,6 +14,7 @@ public class ImmunizationRepository {
 
     private ImmunizationDao immunizationDao;
     private LiveData<List<Immunization>> immunizationList;
+    private int numberOfImmunEntry;
 
     public ImmunizationRepository(Application application){
         immunizationDao = DatabaseClient.getDatabaseClient(application).getICDSDatabase().immunizationDao();
@@ -26,6 +27,11 @@ public class ImmunizationRepository {
 
     public void insertImmunizationList(Immunization immunization){
         new InsertImmunizationData(immunizationDao).execute(immunization);
+    }
+
+    public int numberOfImmunEntry(String centre,String month){
+        new GetNumberOfImmunEntry(immunizationDao).execute(centre,month);
+        return numberOfImmunEntry;
     }
 
     public class InsertImmunizationData extends AsyncTask<Immunization,Void,Void>{
@@ -49,6 +55,20 @@ public class ImmunizationRepository {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+        }
+    }
+
+    public class GetNumberOfImmunEntry extends AsyncTask<String,Void,Integer>{
+
+        private ImmunizationDao immunizationDao;
+
+        public GetNumberOfImmunEntry(ImmunizationDao immunizationDao){
+            this.immunizationDao = immunizationDao;
+        }
+        @Override
+        protected Integer doInBackground(String... strings) {
+           numberOfImmunEntry =  immunizationDao.numberOfEntriesImmunization(strings[0],strings[1]);
+            return null;
         }
     }
 }

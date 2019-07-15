@@ -104,14 +104,14 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_mpr && R.id.mprListFragment != currentDestination) {
             navController.navigate(R.id.mprListFragment);
-        } else if (id == R.id.nav_immunize && R.id.immunizationFragment2 != currentDestination) {
+        } else if (id == R.id.nav_immunize && R.id.immunizListFragment != currentDestination) {
 
-            navController.navigate(R.id.immunizationFragment2);
-        } else if (id == R.id.nav_thr && R.id.THRFragment != currentDestination) {
+            navController.navigate(R.id.immunizListFragment);
+        } else if (id == R.id.nav_thr && R.id.thrListFragment != currentDestination) {
 
-            navController.navigate(R.id.THRFragment);
-        } else if (id == R.id.nav_bnf && R.id.BNFFragment != currentDestination) {
-            navController.navigate(R.id.BNFFragment);
+            navController.navigate(R.id.thrListFragment);
+        } else if (id == R.id.nav_bnf && R.id.bnfListFragment != currentDestination) {
+            navController.navigate(R.id.bnfListFragment);
         } else if (id == R.id.nav_about && R.id.aboutFragment != currentDestination) {
             navController.navigate(R.id.aboutFragment);
 

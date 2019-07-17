@@ -33,6 +33,10 @@ public class BnfRepository {
         return numberOfBnfEntries;
     }
 
+    public void gotStatusUpdate(String centre ){
+        new GotStatusUpdate().execute(centre);
+    }
+
     public class InsertBnfDataTask extends AsyncTask<BNF,Void,Void>{
         private BNFDao bnfDao;
 
@@ -62,6 +66,15 @@ public class BnfRepository {
         @Override
         protected Integer doInBackground(String... strings) {
             numberOfBnfEntries = bnfDao.numberOfEntriesBnf(strings[0],strings[1]);
+            return null;
+        }
+    }
+
+    public class GotStatusUpdate extends AsyncTask<String,Void,Void>{
+
+        @Override
+        protected Void doInBackground(String... strings) {
+            bnfDao.gotStatusUpdate(strings[0]);
             return null;
         }
     }

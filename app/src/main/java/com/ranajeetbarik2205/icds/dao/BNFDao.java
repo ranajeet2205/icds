@@ -21,4 +21,6 @@ public interface BNFDao {
     @Query("SELECT COUNT(*) FROM beneficiary WHERE centre=:centre and reporting_month=:reporting_month")
     int numberOfEntriesBnf(String centre , String reporting_month);
 
+    @Query("UPDATE beneficiary SET status=1 WHERE centre=:centre")
+    void gotStatusUpdate(String centre);
 }

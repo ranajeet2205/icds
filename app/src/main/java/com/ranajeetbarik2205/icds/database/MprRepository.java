@@ -34,6 +34,10 @@ public class MprRepository {
         return numberMprEntry;
     }
 
+    public void getApproved(String centre){
+        new GetApproved().execute(centre);
+    }
+
     public class InsertMprDataTask extends AsyncTask<MPR,Void,Void>{
         private MPRDao mprDao;
 
@@ -62,6 +66,15 @@ public class MprRepository {
         @Override
         protected Integer doInBackground(String... strings) {
             numberMprEntry = mprDao.numberOfEntriesMpr(strings[0],strings[1]);
+            return null;
+        }
+    }
+
+    public class GetApproved extends AsyncTask<String,Void,Void>{
+
+        @Override
+        protected Void doInBackground(String... strings) {
+            mprDao.gotApproved(strings[0]);
             return null;
         }
     }

@@ -1,11 +1,14 @@
 package com.ranajeetbarik2205.icds.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "take_home_ration")
-public class THR {
+public class THR implements Parcelable {
 
     @ColumnInfo(name = "id") @PrimaryKey(autoGenerate = true)
     private int id;
@@ -45,6 +48,29 @@ public class THR {
         this.total_cost = total_cost;
         this.status = status;
     }
+
+    protected THR(Parcel in) {
+        id = in.readInt();
+        reporting_month = in.readString();
+        centre = in.readString();
+        number_total_beneficiary = in.readString();
+        number_total_packets = in.readString();
+        uri_thr_photo = in.readString();
+        total_cost = in.readString();
+        status = in.readInt();
+    }
+
+    public static final Creator<THR> CREATOR = new Creator<THR>() {
+        @Override
+        public THR createFromParcel(Parcel in) {
+            return new THR(in);
+        }
+
+        @Override
+        public THR[] newArray(int size) {
+            return new THR[size];
+        }
+    };
 
     public int getId() {
         return id;
@@ -108,5 +134,22 @@ public class THR {
 
     public void setTotal_cost(String total_cost) {
         this.total_cost = total_cost;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(reporting_month);
+        dest.writeString(centre);
+        dest.writeString(number_total_beneficiary);
+        dest.writeString(number_total_packets);
+        dest.writeString(uri_thr_photo);
+        dest.writeString(total_cost);
+        dest.writeInt(status);
     }
 }

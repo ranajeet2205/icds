@@ -35,6 +35,10 @@ public class ThrViewModel extends AndroidViewModel {
         int numberOfEntries = thrRepository.numberOfEntries(centre, month);
         return numberOfEntries;
     }
+
+    public void gotStatusUpdate(String centre){
+        thrRepository.gotStatusUpdate(centre);
+    }
     public boolean isValid(THR thr){
         String totalBnf = thr.getNumber_total_beneficiary();
         String thrPhotoPath = thr.getUri_thr_photo();

@@ -20,4 +20,7 @@ public interface THRDao {
 
     @Query("SELECT COUNT(*) FROM take_home_ration WHERE centre=:centre and reporting_month=:reporting_month")
     int numberOfEntriesThr(String centre , String reporting_month);
+
+    @Query("UPDATE take_home_ration SET status=1 WHERE centre=:centre")
+    void gotStatusUpdate(String centre);
 }

@@ -1,11 +1,14 @@
 package com.ranajeetbarik2205.icds.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "beneficiary")
-public class BNF {
+public class BNF implements Parcelable {
 
     @ColumnInfo(name = "id") @PrimaryKey(autoGenerate = true)
     private int id;
@@ -51,6 +54,30 @@ public class BNF {
         this.number_total_beneficiary = number_total_beneficiary;
         this.status = status;
     }
+
+    protected BNF(Parcel in) {
+        id = in.readInt();
+        reporting_month = in.readString();
+        centre = in.readString();
+        number_pm = in.readString();
+        number_nm = in.readString();
+        number_babies = in.readString();
+        number_preschool = in.readString();
+        number_total_beneficiary = in.readString();
+        status = in.readInt();
+    }
+
+    public static final Creator<BNF> CREATOR = new Creator<BNF>() {
+        @Override
+        public BNF createFromParcel(Parcel in) {
+            return new BNF(in);
+        }
+
+        @Override
+        public BNF[] newArray(int size) {
+            return new BNF[size];
+        }
+    };
 
     public String getNumber_preschool() {
         return number_preschool;
@@ -122,5 +149,23 @@ public class BNF {
 
     public void setNumber_total_beneficiary(String number_total_beneficiary) {
         this.number_total_beneficiary = number_total_beneficiary;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(reporting_month);
+        dest.writeString(centre);
+        dest.writeString(number_pm);
+        dest.writeString(number_nm);
+        dest.writeString(number_babies);
+        dest.writeString(number_preschool);
+        dest.writeString(number_total_beneficiary);
+        dest.writeInt(status);
     }
 }

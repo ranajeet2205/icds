@@ -1,11 +1,14 @@
 package com.ranajeetbarik2205.icds.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName ="immunization")
-public class Immunization {
+public class Immunization implements Parcelable {
 
     @ColumnInfo(name = "id") @PrimaryKey(autoGenerate = true)
     private int id;
@@ -42,6 +45,28 @@ public class Immunization {
         this.status = status;
     }
 
+
+    protected Immunization(Parcel in) {
+        id = in.readInt();
+        reporting_month = in.readString();
+        centre = in.readString();
+        number_total_due = in.readString();
+        total_number_received = in.readString();
+        uri_photo_immunization = in.readString();
+        status = in.readInt();
+    }
+
+    public static final Creator<Immunization> CREATOR = new Creator<Immunization>() {
+        @Override
+        public Immunization createFromParcel(Parcel in) {
+            return new Immunization(in);
+        }
+
+        @Override
+        public Immunization[] newArray(int size) {
+            return new Immunization[size];
+        }
+    };
 
     public int getId() {
         return id;
@@ -97,5 +122,21 @@ public class Immunization {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(reporting_month);
+        dest.writeString(centre);
+        dest.writeString(number_total_due);
+        dest.writeString(total_number_received);
+        dest.writeString(uri_photo_immunization);
+        dest.writeInt(status);
     }
 }

@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ranajeetbarik2205.icds.R;
 import com.ranajeetbarik2205.icds.databinding.ImmunListItemBinding;
+import com.ranajeetbarik2205.icds.interfaces.RecyclerViewClick;
 import com.ranajeetbarik2205.icds.models.Immunization;
 
 import java.util.List;
@@ -18,10 +19,12 @@ import java.util.List;
 public class ImmunListAdapter extends RecyclerView.Adapter<ImmunListAdapter.MyViewHolder> {
     private final Context context;
     private List<Immunization> items;
+    private RecyclerViewClick recyclerViewClick;
 
-    public ImmunListAdapter(List<Immunization> items, Context context) {
+    public ImmunListAdapter(List<Immunization> items, Context context,RecyclerViewClick recyclerViewClick) {
         this.items = items;
         this.context = context;
+        this.recyclerViewClick = recyclerViewClick;
     }
 
     @NonNull
@@ -35,9 +38,28 @@ public class ImmunListAdapter extends RecyclerView.Adapter<ImmunListAdapter.MyVi
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
         Immunization item = items.get(position);
         holder.set(item);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                recyclerViewClick.onClick(holder.itemView,position);
+            }
+        });
+
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                recyclerViewClick.onLongClick(holder.itemView,position);
+                return true;
+            }
+        });
+
+        if (item.getStatus()==1){
+            holder.immunListItemBinding.statusIcon.setImageResource(R.drawable.ic_thumb_up_black_24dp);
+        }
     }
 
     @Override

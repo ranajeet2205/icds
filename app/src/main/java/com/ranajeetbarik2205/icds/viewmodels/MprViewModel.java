@@ -45,6 +45,9 @@ public class MprViewModel extends AndroidViewModel {
         weightRepository.insertWeight(weight);
     }
 
+    public void getStatusUpdate(String centre){
+        mprRepository.getApproved(centre);
+    }
     public int numberOfMprEntry(String centre,String month){
        int numberEntries =  mprRepository.numberMprEntry(centre,month);
        return numberEntries;

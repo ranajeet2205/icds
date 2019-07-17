@@ -36,6 +36,10 @@ public class ImmunizationViewModel extends AndroidViewModel {
         return numberOfImmunEntry;
     }
 
+    public void gotStatusUpdate(String centre){
+        immunizationRepository.gotStatusUpdate(centre);
+    }
+
     public boolean isValid(Immunization immunization){
         String totalDue = immunization.getNumber_total_due();
         String totalReceived = immunization.getTotal_number_received();

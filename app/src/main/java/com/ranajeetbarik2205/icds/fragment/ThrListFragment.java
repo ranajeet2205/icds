@@ -14,6 +14,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,8 +22,11 @@ import android.view.ViewGroup;
 import com.ranajeetbarik2205.icds.R;
 import com.ranajeetbarik2205.icds.adapter.ThrListAdapter;
 import com.ranajeetbarik2205.icds.databinding.FragmentThrListBinding;
+import com.ranajeetbarik2205.icds.interfaces.RecyclerViewClick;
 import com.ranajeetbarik2205.icds.models.Immunization;
 import com.ranajeetbarik2205.icds.models.THR;
+import com.ranajeetbarik2205.icds.util.AppConstants;
+import com.ranajeetbarik2205.icds.util.SharedPrefManager;
 import com.ranajeetbarik2205.icds.viewmodels.ImmunizationViewModel;
 import com.ranajeetbarik2205.icds.viewmodels.ThrViewModel;
 
@@ -36,6 +40,9 @@ public class ThrListFragment extends Fragment {
     private NavController navController;
     ThrViewModel thrViewModel;
     ThrListAdapter thrListAdapter;
+    RecyclerViewClick recyclerViewClick;
+    List<THR> thrList;
+    private SharedPrefManager sharedPrefManager;
     public ThrListFragment() {
         // Required empty public constructor
     }
@@ -47,6 +54,7 @@ public class ThrListFragment extends Fragment {
         super.onCreate(savedInstanceState);
         navController =  Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
         thrViewModel = ViewModelProviders.of(getActivity()).get(ThrViewModel.class);
+        sharedPrefManager = new SharedPrefManager(getActivity());
     }
 
     @Override
@@ -61,10 +69,32 @@ public class ThrListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        if (TextUtils.equals(sharedPrefManager.getStr(AppConstants.WHO_IS_USER),AppConstants.CDPO) ||
+                TextUtils.equals(sharedPrefManager.getStr(AppConstants.WHO_IS_USER),AppConstants.DSWO)){
+                fragmentThrListBinding.fab.setVisibility(View.GONE);
+        }
+
+
+        recyclerViewClick = new RecyclerViewClick() {
+            @Override
+            public void onClick(View view, int position) {
+                THR thr = thrList.get(position);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("THR",thr);
+                navController.navigate(R.id.action_thrListFragment_to_THRFragment,bundle);
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+
+            }
+        };
+
         thrViewModel.getThrLiveDataList().observe(getActivity(), new Observer<List<THR>>() {
             @Override
             public void onChanged(List<THR> thrs) {
-                thrListAdapter = new ThrListAdapter(thrs,getActivity());
+                thrList = thrs;
+                thrListAdapter = new ThrListAdapter(thrs,getActivity(),recyclerViewClick);
                 fragmentThrListBinding.thrListRcv.setLayoutManager(new LinearLayoutManager(getActivity()));
                 fragmentThrListBinding.thrListRcv.setAdapter(thrListAdapter);
             }

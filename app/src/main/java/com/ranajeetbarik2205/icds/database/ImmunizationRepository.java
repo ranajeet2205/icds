@@ -34,6 +34,10 @@ public class ImmunizationRepository {
         return numberOfImmunEntry;
     }
 
+    public void gotStatusUpdate(String centre){
+        new GotStatusUpdate().execute(centre);
+    }
+
     public class InsertImmunizationData extends AsyncTask<Immunization,Void,Void>{
 
         private ImmunizationDao immunizationDao;
@@ -71,4 +75,14 @@ public class ImmunizationRepository {
             return null;
         }
     }
+
+    public class GotStatusUpdate extends AsyncTask<String,Void,Void>{
+
+        @Override
+        protected Void doInBackground(String... strings) {
+            immunizationDao.gotUpdate(strings[0]);
+            return null;
+        }
+    }
+
 }

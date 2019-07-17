@@ -33,6 +33,10 @@ public class ThrRepository {
         return numberOfThrEntry;
     }
 
+    public void gotStatusUpdate(String centre){
+        new GotStatusUpdate().execute(centre);
+    }
+
     public class InsertThrDataTask extends AsyncTask<THR,Void,Void>{
         private THRDao thrDao;
         public InsertThrDataTask(THRDao thrDao){
@@ -65,6 +69,15 @@ public class ThrRepository {
         @Override
         protected Integer doInBackground(String... strings) {
            numberOfThrEntry =  thrDao.numberOfEntriesThr(strings[0],strings[1]);
+            return null;
+        }
+    }
+
+    public class GotStatusUpdate extends AsyncTask<String,Void,Void>{
+
+        @Override
+        protected Void doInBackground(String... strings) {
+            thrDao.gotStatusUpdate(strings[0]);
             return null;
         }
     }

@@ -30,8 +30,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ranajeetbarik2205.icds.R;
+import com.ranajeetbarik2205.icds.adapter.ImmunListAdapter;
 import com.ranajeetbarik2205.icds.databinding.FragmentImmunizationBinding;
 import com.ranajeetbarik2205.icds.models.Immunization;
+import com.ranajeetbarik2205.icds.util.AppConstants;
+import com.ranajeetbarik2205.icds.util.SharedPrefManager;
 import com.ranajeetbarik2205.icds.viewmodels.ImmunizationViewModel;
 
 import java.io.File;
@@ -54,6 +57,7 @@ public class ImmunizationFragment extends Fragment {
     private String centre, month, totalDue, totalReceived;
     private ImmunizationViewModel immunizationViewModel;
     private NavController navController;
+    private SharedPrefManager sharedPrefManager;
 
     public ImmunizationFragment() {
         // Required empty public constructor
@@ -63,8 +67,9 @@ public class ImmunizationFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        navController =  Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
+        navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
         immunizationViewModel = ViewModelProviders.of(getActivity()).get(ImmunizationViewModel.class);
+        sharedPrefManager = new SharedPrefManager(getActivity());
     }
 
     @Override
@@ -77,7 +82,6 @@ public class ImmunizationFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-
 
 
         monthSpinnerAdapter = new ArrayAdapter<String>(getActivity(),
@@ -142,6 +146,31 @@ public class ImmunizationFragment extends Fragment {
             }
         });
 
+        if (TextUtils.equals(sharedPrefManager.getStr(AppConstants.WHO_IS_USER), AppConstants.CDPO)) {
+            fragmentImmunizationBinding.submitBtn.setText("Approve");
+            Immunization immunization = getArguments().getParcelable("IMMUN");
+            if (immunization.getStatus() == 1) {
+                fragmentImmunizationBinding.submitBtn.setVisibility(View.GONE);
+            }
+
+            fragmentImmunizationBinding.monthSpinner.setSelection(monthSpinnerAdapter.getPosition(immunization.getReporting_month()));
+            fragmentImmunizationBinding.centerSpinner.setSelection(centerSpinnerAdapter.getPosition(immunization.getCentre()));
+            fragmentImmunizationBinding.totalDueEdTxt.setText(immunization.getNumber_total_due());
+            fragmentImmunizationBinding.totalReceivedEdTxt.setText(immunization.getTotal_number_received());
+            Bitmap bitmap = BitmapFactory.decodeFile(immunization.getUri_photo_immunization());
+            fragmentImmunizationBinding.immunizationPhoto.setImageBitmap(bitmap);
+
+            fragmentImmunizationBinding.monthSpinner.setEnabled(false);
+            fragmentImmunizationBinding.centerSpinner.setEnabled(false);
+            fragmentImmunizationBinding.totalDueEdTxt.setEnabled(false);
+            fragmentImmunizationBinding.totalReceivedEdTxt.setEnabled(false);
+            fragmentImmunizationBinding.immunizationPhoto.setEnabled(false);
+        }
+
+        if (TextUtils.equals(sharedPrefManager.getStr(AppConstants.WHO_IS_USER), AppConstants.DSWO)) {
+            fragmentImmunizationBinding.submitBtn.setVisibility(View.GONE);
+        }
+
         fragmentImmunizationBinding.submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -150,20 +179,22 @@ public class ImmunizationFragment extends Fragment {
 
                 Immunization immunization = new Immunization(month, centre, totalDue, totalReceived, thrPhotoPath, 0);
                 boolean valid = immunizationViewModel.isValid(immunization);
-                if (fragmentImmunizationBinding.monthSpinner.getSelectedItemPosition()==0){
-                    Toasty.info(getActivity(),"Please Select a month",Toast.LENGTH_SHORT,true).show();
-                }
-                else if (immunizationViewModel.numberOfImmunEntry(centre,month)==1){
+                if (TextUtils.equals(sharedPrefManager.getStr(AppConstants.WHO_IS_USER),AppConstants.CDPO)) {
+                    immunizationViewModel.gotStatusUpdate(centre);
+                    Toasty.success(getActivity(), "Approved", Toast.LENGTH_LONG, true).show();
+                    fragmentImmunizationBinding.submitBtn.setVisibility(View.GONE);
+                } else if (fragmentImmunizationBinding.monthSpinner.getSelectedItemPosition() == 0) {
+                    Toasty.info(getActivity(), "Please Select a month", Toast.LENGTH_SHORT, true).show();
+                } else if (immunizationViewModel.numberOfImmunEntry(centre, month) == 1) {
                     Toasty.info(getActivity(), "You Already Entered For this Centre", Toast.LENGTH_SHORT, true).show();
 
-                } else if (fragmentImmunizationBinding.monthSpinner.getSelectedItemPosition()!=0 && valid && (TextUtils.equals(totalDue,totalReceived) || (Integer.parseInt(totalDue)<Integer.parseInt(totalReceived)))){
+                } else if (fragmentImmunizationBinding.monthSpinner.getSelectedItemPosition() != 0 && valid && (TextUtils.equals(totalDue, totalReceived) || (Integer.parseInt(totalDue) < Integer.parseInt(totalReceived)))) {
                     immunizationViewModel.insertImmunizationData(immunization);
                     Toasty.success(getActivity(), "Data Saved Successfully", Toast.LENGTH_LONG, true).show();
                     navController.navigate(R.id.action_immunizationFragment2_to_immunizListFragment);
 
-                }
-                else{
-                    Toasty.info(getActivity(),"Please Provide Valid Data",Toast.LENGTH_SHORT,true).show();
+                } else {
+                    Toasty.info(getActivity(), "Please Provide Valid Data", Toast.LENGTH_SHORT, true).show();
                 }
             }
         });

@@ -37,6 +37,9 @@ public class BnfViewModel extends AndroidViewModel {
         return numberEntries;
     }
 
+    public void gotStatusUpdate(String centre){
+        bnfRepository.gotStatusUpdate(centre);
+    }
 
     public boolean isValid(BNF bnf){
         String numberPM = bnf.getNumber_pm();

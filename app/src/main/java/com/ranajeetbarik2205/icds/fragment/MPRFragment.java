@@ -101,23 +101,7 @@ public class MPRFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
-        if (TextUtils.equals(sharedPrefManager.getStr(AppConstants.WHO_IS_USER),AppConstants.CDPO)){
-            fragmentMprBinding.submitBtn.setText("Approve");
-            MPR mpr = getArguments().getParcelable("MPR");
-            fragmentMprBinding.nameOfAwwEdTxt.setText(mpr.getAww_name());
-            fragmentMprBinding.nameOfAwhEdTxt.setText(mpr.getAwh_name());
-            fragmentMprBinding.numberOfPmEdTxt.setText(mpr.getNumber_pm());
-            fragmentMprBinding.numberOfNmEdTxt.setText(mpr.getNumber_nm());
-            fragmentMprBinding.numberOfImmunizedChildrenEdTxt.setText(mpr.getNumber_immunized_children());
-            fragmentMprBinding.numberOfBabiesEdTxt.setText(mpr.getNumber_babies());
-            fragmentMprBinding.numberOfHealthCheckupChildrenEdTxt.setText(mpr.getNumber_health_checkup());
-            fragmentMprBinding.numberOfImmunizedChildrenEdTxt.setText(mpr.getNumber_immunized_children());
-            fragmentMprBinding.numberOfReferalChildrenEdTxt.setText(mpr.getNumber_referal_children());
-            fragmentMprBinding.numberOfAdolosenseGirlChildrenEdTxt.setText(mpr.getNumber_adolosense_girl());
-        }
-         if (TextUtils.equals(sharedPrefManager.getStr(AppConstants.WHO_IS_USER),AppConstants.DSWO)){
-            fragmentMprBinding.submitBtn.setVisibility(View.GONE);
-        }
+
 
         mprViewModel = ViewModelProviders.of(getActivity()).get(MprViewModel.class);
         checkAndRequestPermissions();
@@ -177,6 +161,55 @@ public class MPRFragment extends Fragment {
             }
         });
 
+        if (TextUtils.equals(sharedPrefManager.getStr(AppConstants.WHO_IS_USER),AppConstants.CDPO)){
+            fragmentMprBinding.submitBtn.setText("Approve");
+            MPR mpr = getArguments().getParcelable("MPR");
+            if (mpr.getStatus()==1){
+                fragmentMprBinding.submitBtn.setVisibility(View.GONE);
+            }
+            fragmentMprBinding.nameOfAwwEdTxt.setText(mpr.getAww_name());
+            fragmentMprBinding.nameOfAwhEdTxt.setText(mpr.getAwh_name());
+            fragmentMprBinding.numberOfPmEdTxt.setText(mpr.getNumber_pm());
+            fragmentMprBinding.numberOfNmEdTxt.setText(mpr.getNumber_nm());
+            fragmentMprBinding.numberOfImmunizedChildrenEdTxt.setText(mpr.getNumber_immunized_children());
+            fragmentMprBinding.numberOfBabiesEdTxt.setText(mpr.getNumber_babies());
+            fragmentMprBinding.numberOfPreschoolChildrenEdTxt.setText(mpr.getNumber_preschool_children());
+            fragmentMprBinding.numberOfHealthCheckupChildrenEdTxt.setText(mpr.getNumber_health_checkup());
+            fragmentMprBinding.numberOfImmunizedChildrenEdTxt.setText(mpr.getNumber_immunized_children());
+            fragmentMprBinding.numberOfReferalChildrenEdTxt.setText(mpr.getNumber_referal_children());
+            fragmentMprBinding.numberOfAdolosenseGirlChildrenEdTxt.setText(mpr.getNumber_adolosense_girl());
+            fragmentMprBinding.centerSpinner.setSelection(centerSpinnerAdapter.getPosition(mpr.getCentre()));
+            fragmentMprBinding.monthSpinner.setSelection(monthSpinnerAdapter.getPosition(mpr.getReporting_month()));
+            Bitmap centreBitmap = BitmapFactory.decodeFile(mpr.getUri_photo_centre());
+            fragmentMprBinding.centrePhoto.setImageBitmap(centreBitmap);
+            Bitmap childrenBitmap = BitmapFactory.decodeFile(mpr.getUri_photo_children());
+            fragmentMprBinding.childrenPhoto.setImageBitmap(childrenBitmap);
+
+            fragmentMprBinding.nameOfAwwEdTxt.setEnabled(false);
+            fragmentMprBinding.nameOfAwhEdTxt.setEnabled(false);
+            fragmentMprBinding.numberOfPmEdTxt.setEnabled(false);
+            fragmentMprBinding.numberOfNmEdTxt.setEnabled(false);
+            fragmentMprBinding.numberOfImmunizedChildrenEdTxt.setEnabled(false);
+            fragmentMprBinding.numberOfBabiesEdTxt.setEnabled(false);
+            fragmentMprBinding.numberOfPreschoolChildrenEdTxt.setEnabled(false);
+            fragmentMprBinding.numberOfHealthCheckupChildrenEdTxt.setEnabled(false);
+            fragmentMprBinding.numberOfImmunizedChildrenEdTxt.setEnabled(false);
+            fragmentMprBinding.numberOfReferalChildrenEdTxt.setEnabled(false);
+            fragmentMprBinding.numberOfAdolosenseGirlChildrenEdTxt.setEnabled(false);
+            fragmentMprBinding.centerSpinner.setEnabled(false);
+            fragmentMprBinding.monthSpinner.setEnabled(false);
+            fragmentMprBinding.centrePhoto.setEnabled(false);
+            fragmentMprBinding.childrenPhoto.setEnabled(false);
+            fragmentMprBinding.wieghtBabiesTxt.setVisibility(View.GONE);
+            fragmentMprBinding.weightPreschoolChildren.setVisibility(View.GONE);
+            fragmentMprBinding.weightBabiesLayout.setVisibility(View.GONE);
+            fragmentMprBinding.weightPreschoolLayout.setVisibility(View.GONE);
+
+
+        }
+        if (TextUtils.equals(sharedPrefManager.getStr(AppConstants.WHO_IS_USER),AppConstants.DSWO)){
+            fragmentMprBinding.submitBtn.setVisibility(View.GONE);
+        }
 
         fragmentMprBinding.submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -215,7 +248,9 @@ public class MPRFragment extends Fragment {
                     e.printStackTrace();
                 }finally {
                     if (TextUtils.equals(sharedPrefManager.getStr(AppConstants.WHO_IS_USER),AppConstants.CDPO)){
+                        mprViewModel.getStatusUpdate(centre);
                         Toast.makeText(getActivity(), "Approved", Toast.LENGTH_SHORT).show();
+                        fragmentMprBinding.submitBtn.setVisibility(View.GONE);
                     }
                     else if (fragmentMprBinding.monthSpinner.getSelectedItemPosition() == 0) {
                         Toasty.info(getActivity(), "Please Select Month", Toast.LENGTH_SHORT, true).show();

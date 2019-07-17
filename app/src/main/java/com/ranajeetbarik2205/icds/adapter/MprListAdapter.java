@@ -55,6 +55,11 @@ public class MprListAdapter extends RecyclerView.Adapter<MprListAdapter.MyViewHo
                 return true;
             }
         });
+        if (item.getStatus()==1){
+            holder.mprListItemBinding.statusIcon.setImageResource(R.drawable.ic_thumb_up_black_24dp);
+        }
+
+
     }
 
     @Override

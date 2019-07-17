@@ -21,6 +21,7 @@ import androidx.navigation.Navigation;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +34,8 @@ import android.widget.Toast;
 import com.ranajeetbarik2205.icds.R;
 import com.ranajeetbarik2205.icds.databinding.FragmentThrBinding;
 import com.ranajeetbarik2205.icds.models.THR;
+import com.ranajeetbarik2205.icds.util.AppConstants;
+import com.ranajeetbarik2205.icds.util.SharedPrefManager;
 import com.ranajeetbarik2205.icds.viewmodels.ThrViewModel;
 
 import java.io.File;
@@ -54,6 +57,7 @@ public class THRFragment extends Fragment {
     private String month, center, totalBnf, totalPackets, totalCost;
     private String thrPhotoPath;
     private NavController navController;
+    private SharedPrefManager sharedPrefManager;
 
     public THRFragment() {
         // Required empty public constructor
@@ -62,7 +66,8 @@ public class THRFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        navController =  Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
+        navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
+        sharedPrefManager = new SharedPrefManager(getActivity());
     }
 
     @Override
@@ -140,6 +145,34 @@ public class THRFragment extends Fragment {
             }
         });
 
+        if (TextUtils.equals(sharedPrefManager.getStr(AppConstants.WHO_IS_USER), AppConstants.CDPO)) {
+            fragmentThrBinding.submitBtn.setText("Approve");
+            THR thr = getArguments().getParcelable("THR");
+            if (thr.getStatus() == 1) {
+                fragmentThrBinding.submitBtn.setVisibility(View.GONE);
+            }
+
+            fragmentThrBinding.totalBnfEdTxt.setText(thr.getNumber_total_beneficiary());
+            fragmentThrBinding.totalPacketsEdTxt.setText(thr.getNumber_total_packets());
+            fragmentThrBinding.totalCostEdTxt.setText(thr.getTotal_cost());
+            fragmentThrBinding.monthSpinner.setSelection(monthSpinnerAdapter.getPosition(thr.getReporting_month()));
+            fragmentThrBinding.centerSpinner.setSelection(centerSpinnerAdapter.getPosition(thr.getCentre()));
+            Bitmap bitmap = BitmapFactory.decodeFile(thr.getUri_thr_photo());
+            fragmentThrBinding.thrPhoto.setImageBitmap(bitmap);
+
+
+            fragmentThrBinding.totalBnfEdTxt.setEnabled(false);
+            fragmentThrBinding.totalCostEdTxt.setEnabled(false);
+            fragmentThrBinding.totalPacketsEdTxt.setEnabled(false);
+            fragmentThrBinding.monthSpinner.setEnabled(false);
+            fragmentThrBinding.centerSpinner.setEnabled(false);
+            fragmentThrBinding.thrPhoto.setEnabled(false);
+        }
+
+        if (TextUtils.equals(sharedPrefManager.getStr(AppConstants.WHO_IS_USER), AppConstants.DSWO)) {
+            fragmentThrBinding.submitBtn.setVisibility(View.GONE);
+        }
+
         fragmentThrBinding.submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -149,19 +182,21 @@ public class THRFragment extends Fragment {
 
                 THR thr = new THR(month, center, totalBnf, totalPackets, thrPhotoPath, totalCost, 0);
                 boolean valid = thrViewModel.isValid(thr);
-                if (fragmentThrBinding.monthSpinner.getSelectedItemPosition()==0){
-                    Toasty.info(getActivity(),"Please Select a month",Toast.LENGTH_SHORT,true).show();
-                }else if (thrViewModel.getNumberOfThrEntries(center,month)==1){
+                if (TextUtils.equals(sharedPrefManager.getStr(AppConstants.WHO_IS_USER),AppConstants.CDPO)) {
+                    thrViewModel.gotStatusUpdate(center);
+                    Toasty.success(getActivity(), "Approved", Toast.LENGTH_LONG, true).show();
+                    fragmentThrBinding.submitBtn.setVisibility(View.GONE);
+                } else if (fragmentThrBinding.monthSpinner.getSelectedItemPosition() == 0) {
+                    Toasty.info(getActivity(), "Please Select a month", Toast.LENGTH_SHORT, true).show();
+                } else if (thrViewModel.getNumberOfThrEntries(center, month) == 1) {
                     Toasty.info(getActivity(), "You Already Entered For this Centre", Toast.LENGTH_SHORT, true).show();
-                }
-                else if ( valid){
+                } else if (valid) {
                     thrViewModel.insertThrData(thr);
                     Toasty.success(getActivity(), "Data Saved Successfully", Toast.LENGTH_LONG, true).show();
                     navController.navigate(R.id.action_THRFragment_to_thrListFragment);
 
-                }
-                else{
-                    Toasty.info(getActivity(),"Please Provide Valid Data",Toast.LENGTH_SHORT,true).show();
+                } else {
+                    Toasty.info(getActivity(), "Please Provide Valid Data", Toast.LENGTH_SHORT, true).show();
                 }
 
             }

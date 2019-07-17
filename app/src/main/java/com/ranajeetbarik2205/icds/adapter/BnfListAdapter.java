@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ranajeetbarik2205.icds.R;
 import com.ranajeetbarik2205.icds.databinding.BnfListItemBinding;
+import com.ranajeetbarik2205.icds.interfaces.RecyclerViewClick;
 import com.ranajeetbarik2205.icds.models.BNF;
 
 import java.util.List;
@@ -18,10 +19,12 @@ import java.util.List;
 public class BnfListAdapter extends RecyclerView.Adapter<BnfListAdapter.MyViewHolder> {
     private final Context context;
     private List<BNF> items;
+    RecyclerViewClick recyclerViewClick;
 
-    public BnfListAdapter(List<BNF> items, Context context) {
+    public BnfListAdapter(List<BNF> items, Context context,RecyclerViewClick recyclerViewClick) {
         this.items = items;
         this.context = context;
+        this.recyclerViewClick = recyclerViewClick;
     }
 
     @NonNull
@@ -35,9 +38,27 @@ public class BnfListAdapter extends RecyclerView.Adapter<BnfListAdapter.MyViewHo
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
         BNF item = items.get(position);
         holder.set(item);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                recyclerViewClick.onClick(holder.itemView,position);
+            }
+        });
+
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                recyclerViewClick.onLongClick(holder.itemView,position);
+                return true;
+            }
+        });
+        if (item.getStatus()==1){
+            holder.bnfListItemBinding.statusIcon.setImageResource(R.drawable.ic_thumb_up_black_24dp);
+        }
     }
 
     @Override

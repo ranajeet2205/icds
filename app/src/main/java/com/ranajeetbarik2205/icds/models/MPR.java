@@ -1,11 +1,14 @@
 package com.ranajeetbarik2205.icds.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "monthly_progress")
-public class MPR {
+public class MPR  implements Parcelable {
 
     @ColumnInfo(name = "id")
     @PrimaryKey(autoGenerate = true)
@@ -44,6 +47,9 @@ public class MPR {
     @ColumnInfo(name = "number_referal_children")
     private String number_referal_children;
 
+    @ColumnInfo(name = "number_adolosense_girl")
+    private String number_adolosense_girl;
+
     @ColumnInfo(name = "uri_photo_children")
     private String uri_photo_children;
 
@@ -62,7 +68,7 @@ public class MPR {
     public MPR(String reporting_month, String centre, String aww_name, String awh_name,
                String number_pm, String number_nm, String number_babies,
                String number_preschool_children, String number_immunized_children,
-               String number_health_checkup, String number_referal_children,
+               String number_health_checkup, String number_referal_children, String number_adolosense_girl,
                String uri_photo_children, String uri_photo_centre,String uri_signature,int status) {
 
         this.reporting_month = reporting_month;
@@ -76,12 +82,45 @@ public class MPR {
         this.number_immunized_children = number_immunized_children;
         this.number_health_checkup = number_health_checkup;
         this.number_referal_children = number_referal_children;
+        this.number_adolosense_girl = number_adolosense_girl;
         this.uri_photo_children = uri_photo_children;
         this.uri_photo_centre = uri_photo_centre;
         this.uri_signature = uri_signature;
         this.status = status;
     }
 
+
+    protected MPR(Parcel in) {
+        id = in.readInt();
+        centre = in.readString();
+        reporting_month = in.readString();
+        aww_name = in.readString();
+        awh_name = in.readString();
+        number_pm = in.readString();
+        number_nm = in.readString();
+        number_babies = in.readString();
+        number_preschool_children = in.readString();
+        number_immunized_children = in.readString();
+        number_health_checkup = in.readString();
+        number_referal_children = in.readString();
+        number_adolosense_girl = in.readString();
+        uri_photo_children = in.readString();
+        uri_photo_centre = in.readString();
+        uri_signature = in.readString();
+        status = in.readInt();
+    }
+
+    public static final Creator<MPR> CREATOR = new Creator<MPR>() {
+        @Override
+        public MPR createFromParcel(Parcel in) {
+            return new MPR(in);
+        }
+
+        @Override
+        public MPR[] newArray(int size) {
+            return new MPR[size];
+        }
+    };
 
     public int getId() {
         return id;
@@ -90,6 +129,18 @@ public class MPR {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getNumber_adolosense_girl() {
+        return number_adolosense_girl;
+    }
+
+    public void setNumber_adolosense_girl(String number_adolosense_girl) {
+        this.number_adolosense_girl = number_adolosense_girl;
+    }
+
+    public static Creator<MPR> getCREATOR() {
+        return CREATOR;
     }
 
     public String getUri_photo_children() {
@@ -210,5 +261,31 @@ public class MPR {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(centre);
+        dest.writeString(reporting_month);
+        dest.writeString(aww_name);
+        dest.writeString(awh_name);
+        dest.writeString(number_pm);
+        dest.writeString(number_nm);
+        dest.writeString(number_babies);
+        dest.writeString(number_preschool_children);
+        dest.writeString(number_immunized_children);
+        dest.writeString(number_health_checkup);
+        dest.writeString(number_referal_children);
+        dest.writeString(number_adolosense_girl);
+        dest.writeString(uri_photo_children);
+        dest.writeString(uri_photo_centre);
+        dest.writeString(uri_signature);
+        dest.writeInt(status);
     }
 }

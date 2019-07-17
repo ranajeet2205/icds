@@ -67,7 +67,7 @@ public class MPRFragment extends Fragment {
     private ArrayAdapter<String> centerSpinnerAdapter;
     private String centre, month, awwName, awhName, pmNumber, nmNumber, babiesNumber,
             preschoolChildren, healthCheckup, immunized, referal, babiesNormalWeight, babiesModerateWeight,
-            babiesSnmWeight, preschoolNormalWeight, preschoolModerateWeight, preschoolSnmWeight;
+            babiesSnmWeight, preschoolNormalWeight, preschoolModerateWeight, preschoolSnmWeight,adoloSenseGirl;
     private MprViewModel mprViewModel;
     private Uri imageUri;
     private String currentPhotoPath;
@@ -103,6 +103,17 @@ public class MPRFragment extends Fragment {
 
         if (TextUtils.equals(sharedPrefManager.getStr(AppConstants.WHO_IS_USER),AppConstants.CDPO)){
             fragmentMprBinding.submitBtn.setText("Approve");
+            MPR mpr = getArguments().getParcelable("MPR");
+            fragmentMprBinding.nameOfAwwEdTxt.setText(mpr.getAww_name());
+            fragmentMprBinding.nameOfAwhEdTxt.setText(mpr.getAwh_name());
+            fragmentMprBinding.numberOfPmEdTxt.setText(mpr.getNumber_pm());
+            fragmentMprBinding.numberOfNmEdTxt.setText(mpr.getNumber_nm());
+            fragmentMprBinding.numberOfImmunizedChildrenEdTxt.setText(mpr.getNumber_immunized_children());
+            fragmentMprBinding.numberOfBabiesEdTxt.setText(mpr.getNumber_babies());
+            fragmentMprBinding.numberOfHealthCheckupChildrenEdTxt.setText(mpr.getNumber_health_checkup());
+            fragmentMprBinding.numberOfImmunizedChildrenEdTxt.setText(mpr.getNumber_immunized_children());
+            fragmentMprBinding.numberOfReferalChildrenEdTxt.setText(mpr.getNumber_referal_children());
+            fragmentMprBinding.numberOfAdolosenseGirlChildrenEdTxt.setText(mpr.getNumber_adolosense_girl());
         }
          if (TextUtils.equals(sharedPrefManager.getStr(AppConstants.WHO_IS_USER),AppConstants.DSWO)){
             fragmentMprBinding.submitBtn.setVisibility(View.GONE);
@@ -186,13 +197,14 @@ public class MPRFragment extends Fragment {
                 preschoolNormalWeight = fragmentMprBinding.weightOfNormalPreschoolEdTxt.getText().toString().trim();
                 preschoolModerateWeight = fragmentMprBinding.weightOfModeratePreschoolEdTxt.getText().toString().trim();
                 preschoolSnmWeight = fragmentMprBinding.weightOfSnmPreschoolEdTxt.getText().toString().trim();
+                adoloSenseGirl = fragmentMprBinding.numberOfAdolosenseGirlChildrenEdTxt.getText().toString().trim();
 
                 MPR mpr = null;
                 Weight weight = null;
                 try {
                     mpr = new MPR(month, centre, awwName, awhName, pmNumber, nmNumber, babiesNumber,
                             preschoolChildren, immunized
-                            , healthCheckup, referal, centrePhotoFile.getAbsolutePath(),
+                            , healthCheckup, referal,adoloSenseGirl, centrePhotoFile.getAbsolutePath(),
                             childrenPhotoFile.getAbsolutePath(), signaturePath, 0);
 
                     weight = new Weight(centre, month, babiesNumber, babiesNormalWeight,

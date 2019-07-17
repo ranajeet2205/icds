@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -38,6 +39,7 @@ public class LoginActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
     SharedPrefManager sharedPrefManager;
     SignUpViewModel signUpViewModel;
+    String designation;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +59,9 @@ public class LoginActivity extends AppCompatActivity {
                 userMailId  = activityLoginBinding.usernameEdTxt.getText().toString().trim();
                 userPassword = activityLoginBinding.passwordEdTxt.getText().toString().trim();
                 if (isEmailValid(userMailId) && isPasswordValid(userPassword) && !userMailId.isEmpty() && !userPassword.isEmpty() && isNetworkConnected()){
+
                     sharedPrefManager.setBool(AppConstants.IS_FIRST_TIME_LOGIN,true);
+                    sharedPrefManager.setStr(AppConstants.USER_MAIL_ID,userMailId);
                     loginWithEmail();
 
                 }
@@ -150,9 +154,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()){
                     //preferenceManager.setIsFirstTimeLogin(false);
-                    String designation = signUpViewModel.designation(userMailId);
-                    sharedPrefManager.setStr(AppConstants.WHO_IS_USER,designation);
-                    Toast.makeText(LoginActivity.this, designation, Toast.LENGTH_SHORT).show();
+
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
                     finish();
                 }

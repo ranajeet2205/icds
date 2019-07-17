@@ -2,11 +2,14 @@ package com.ranajeetbarik2205.icds.database;
 
 import android.app.Application;
 import android.os.AsyncTask;
+import android.widget.Toast;
 
 import androidx.lifecycle.LiveData;
 
 import com.ranajeetbarik2205.icds.dao.UserDao;
 import com.ranajeetbarik2205.icds.models.User;
+import com.ranajeetbarik2205.icds.util.AppConstants;
+import com.ranajeetbarik2205.icds.util.SharedPrefManager;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -15,10 +18,14 @@ public class UserRepository {
 
     private UserDao userDao;
     private LiveData<List<User>> userLiveDataList;
+    List<String> designations ;
+    private String designation ;
+    SharedPrefManager sharedPrefManager;
 
     public UserRepository(Application application){
         userDao = DatabaseClient.getDatabaseClient(application).getICDSDatabase().userDao();
         userLiveDataList = userDao.getAllUserDetails();
+        sharedPrefManager = new SharedPrefManager(application);
     }
 
     public LiveData<List<User>> getUserLiveDataList(){
@@ -30,14 +37,7 @@ public class UserRepository {
     }
 
     public String getDesignation(String email){
-        String designation = null;
-        try {
-            designation = new GetDesignation(userDao).execute(email).get();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        new GetDesignation(userDao).execute(email);
         return designation;
     }
 
@@ -69,7 +69,7 @@ public class UserRepository {
     public class GetDesignation extends AsyncTask<String,Void,String>{
 
         private UserDao userdao;
-        String designation;
+
 
         public GetDesignation(UserDao userdao){
             this.userdao = userdao;
@@ -82,12 +82,14 @@ public class UserRepository {
         @Override
         protected String doInBackground(String... strings) {
             designation = userdao.getDesignation(strings[0]);
-            return null;
+           // designation = designations.get(0);
+            return designation;
         }
 
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
+            sharedPrefManager.setStr(AppConstants.WHO_IS_USER,designation);
 
         }
     }

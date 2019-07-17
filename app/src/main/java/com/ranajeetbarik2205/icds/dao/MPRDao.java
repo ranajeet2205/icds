@@ -26,4 +26,7 @@ public interface MPRDao {
 
     @Query("SELECT centre FROM monthly_progress")
     LiveData<List<String>> centres();
+
+    @Query("UPDATE monthly_progress SET status=1 where centre=:centre")
+    void gotApproved(String centre);
 }

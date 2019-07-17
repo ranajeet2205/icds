@@ -18,15 +18,18 @@ import com.ranajeetbarik2205.icds.activity.LoginActivity;
 import com.ranajeetbarik2205.icds.fragment.BNFFragment;
 import com.ranajeetbarik2205.icds.util.AppConstants;
 import com.ranajeetbarik2205.icds.util.SharedPrefManager;
+import com.ranajeetbarik2205.icds.viewmodels.SignUpViewModel;
 
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import android.view.Menu;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -34,11 +37,15 @@ public class MainActivity extends AppCompatActivity
     private NavController navController;
     int currentDestination;
     SharedPrefManager sharedPrefManager;
+    String designation;
+    SignUpViewModel signUpViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        signUpViewModel = ViewModelProviders.of(this).get(SignUpViewModel.class);
+        designation = signUpViewModel.designation(sharedPrefManager.getStr(AppConstants.USER_MAIL_ID));
         Toolbar toolbar = findViewById(R.id.toolbar);
         sharedPrefManager = new SharedPrefManager(this);
         setSupportActionBar(toolbar);
@@ -59,6 +66,13 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.setItemIconTintList(null);
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
     }
 
     @Override
@@ -104,6 +118,7 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_mpr && R.id.mprListFragment != currentDestination) {
             navController.navigate(R.id.mprListFragment);
+
         } else if (id == R.id.nav_immunize && R.id.immunizListFragment != currentDestination) {
 
             navController.navigate(R.id.immunizListFragment);

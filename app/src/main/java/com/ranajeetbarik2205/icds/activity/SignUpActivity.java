@@ -91,6 +91,7 @@ public class SignUpActivity extends AppCompatActivity {
                     Toasty.error(SignUpActivity.this, "Please Provide Valid Data", Toast.LENGTH_SHORT, true).show();
                     activitySignUpBinding.progressbar.setVisibility(View.GONE);
                 } else {
+                    signUpViewModel.insertUser(user);
                     signUpWithEmail(email, password);
                     //activitySignUpBinding.progressbar.setVisibility(View.GONE);
                 }
@@ -199,7 +200,7 @@ public class SignUpActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
 
                 if (task.isSuccessful()) {
-                    signUpViewModel.insertUser(user);
+
                     startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
                     Toasty.success(SignUpActivity.this, "Sign Up Successful", Toast.LENGTH_SHORT, true).show();
                     finish();

@@ -25,6 +25,7 @@ import androidx.navigation.Navigation;
 
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,6 +40,8 @@ import com.ranajeetbarik2205.icds.R;
 import com.ranajeetbarik2205.icds.databinding.FragmentMprBinding;
 import com.ranajeetbarik2205.icds.models.MPR;
 import com.ranajeetbarik2205.icds.models.Weight;
+import com.ranajeetbarik2205.icds.util.AppConstants;
+import com.ranajeetbarik2205.icds.util.SharedPrefManager;
 import com.ranajeetbarik2205.icds.viewmodels.MprViewModel;
 
 import java.io.File;
@@ -73,6 +76,7 @@ public class MPRFragment extends Fragment {
     private File centrePhotoFile, childrenPhotoFile;
     private int photoFlag = 0;
     NavController navController;
+    SharedPrefManager sharedPrefManager;
 
     public MPRFragment() {
         // Required empty public constructor
@@ -83,6 +87,7 @@ public class MPRFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         navController = Navigation.findNavController(getActivity(),R.id.nav_host_fragment);
+        sharedPrefManager = new SharedPrefManager(getActivity());
     }
 
     @Override
@@ -95,6 +100,13 @@ public class MPRFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+
+        if (TextUtils.equals(sharedPrefManager.getStr(AppConstants.WHO_IS_USER),AppConstants.CDPO)){
+            fragmentMprBinding.submitBtn.setText("Approve");
+        }
+         if (TextUtils.equals(sharedPrefManager.getStr(AppConstants.WHO_IS_USER),AppConstants.DSWO)){
+            fragmentMprBinding.submitBtn.setVisibility(View.GONE);
+        }
 
         mprViewModel = ViewModelProviders.of(getActivity()).get(MprViewModel.class);
         checkAndRequestPermissions();
@@ -189,28 +201,32 @@ public class MPRFragment extends Fragment {
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                }
-
-                if (fragmentMprBinding.monthSpinner.getSelectedItemPosition() == 0) {
-                    Toasty.info(getActivity(), "Please Select Month", Toast.LENGTH_SHORT, true).show();
-                }else if(mprViewModel.numberOfMprEntry(centre,month)==1){
-                    Toasty.info(getActivity(), "You Already Entered For this Centre", Toast.LENGTH_SHORT, true).show();
-                }
-                else if (mprViewModel.isValid(mpr, weight)) {
-                    mprViewModel.insertMprData(mpr);
-                    mprViewModel.insertWeightData(weight);
-                    Bitmap signatureBitmap = fragmentMprBinding.signaturePad.getSignatureBitmap();
-                    if (addJpgSignatureToGallery(signatureBitmap)) {
-                        Toast.makeText(getActivity(), "Signature saved into the Gallery", Toast.LENGTH_SHORT).show();
-                        //Toast.makeText(getActivity(), path, Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(getActivity(), "Unable to store the signature", Toast.LENGTH_SHORT).show();
+                }finally {
+                    if (TextUtils.equals(sharedPrefManager.getStr(AppConstants.WHO_IS_USER),AppConstants.CDPO)){
+                        Toast.makeText(getActivity(), "Approved", Toast.LENGTH_SHORT).show();
                     }
-                    Toasty.success(getActivity(), "Data Saved Successfully", Toast.LENGTH_LONG, true).show();
-                    navController.navigate(R.id.action_MPRFragment_to_mprListFragment);
-                } else {
+                    else if (fragmentMprBinding.monthSpinner.getSelectedItemPosition() == 0) {
+                        Toasty.info(getActivity(), "Please Select Month", Toast.LENGTH_SHORT, true).show();
+                    }else if(mprViewModel.numberOfMprEntry(centre,month)==1){
+                        Toasty.info(getActivity(), "You Already Entered For this Centre", Toast.LENGTH_SHORT, true).show();
+                    }
+                    else if (mprViewModel.isValid(mpr, weight)) {
+                        mprViewModel.insertMprData(mpr);
+                        mprViewModel.insertWeightData(weight);
+                        Bitmap signatureBitmap = fragmentMprBinding.signaturePad.getSignatureBitmap();
+                        if (addJpgSignatureToGallery(signatureBitmap)) {
+                            Toast.makeText(getActivity(), "Signature saved into the Gallery", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(getActivity(), path, Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getActivity(), "Unable to store the signature", Toast.LENGTH_SHORT).show();
+                        }
+                        Toasty.success(getActivity(), "Data Saved Successfully", Toast.LENGTH_LONG, true).show();
+                        navController.navigate(R.id.action_MPRFragment_to_mprListFragment);
+                    } else {
 
-                    Toasty.info(getActivity(), "Please provide The Required Data", Toast.LENGTH_SHORT, true).show();
+                        Toasty.info(getActivity(), "Please provide The Required Data", Toast.LENGTH_SHORT, true).show();
+                    }
+
                 }
 
 

@@ -5,4 +5,7 @@ public class AppConstants {
     public static final String IS_FIRST_TIME_LOGIN= "IS_FIRST_TIME_LOGIN";
     public static final String WHO_IS_USER = "WHO_IS_USER";
     public static final String USER_MAIL_ID = "USER_MAIL_ID";
+    public static final String Supervisor = "Supervisor";
+    public static final String CDPO = "CDPO";
+    public static final String DSWO = "DSWO";
 }

@@ -96,6 +96,29 @@ public class LoginActivity extends AppCompatActivity {
 
         activityLoginBinding.designationSpinner.setAdapter(designationSpinnerAdapter);
 
+        activityLoginBinding.forgetPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                userMailId  = activityLoginBinding.usernameEdTxt.getText().toString().trim();
+                if (isEmailValid(userMailId) && !TextUtils.isEmpty(userMailId)){
+                    mAuth.sendPasswordResetEmail(userMailId).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()){
+                                Toasty.success(LoginActivity.this,"Please Check Your mail To Reset Password",Toast.LENGTH_LONG,true).show();
+                            }else if (!task.isSuccessful()){
+                                Toasty.error(LoginActivity.this,"Make Sure You Signed Up",Toast.LENGTH_LONG,true).show();
+                            }
+                        }
+                    });
+                }else if (TextUtils.isEmpty(userMailId)){
+                    Toasty.error(LoginActivity.this,"Please Enter Email",Toast.LENGTH_LONG,true).show();
+                }else if (isEmailValid(userMailId)){
+                    Toasty.error(LoginActivity.this,"Please Enter Valid Email",Toast.LENGTH_LONG,true).show();
+                }
+            }
+        });
+
     }
 
 
